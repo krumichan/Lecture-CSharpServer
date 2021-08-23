@@ -7,6 +7,48 @@ using System.Threading;
 
 namespace ServerCore
 {
+    public abstract class PacketSession : Session
+    {
+        public static readonly int HeaderSize = 2;
+
+        // sealed: 이후 상속 불가.
+        // [size(2)][packetId(2)][ ... ][size(2)][packetId(2)][ ... ] ...
+        public sealed override int OnReceive(ArraySegment<byte> buffer)
+        {
+            int processLength = 0;
+
+            while (true)
+            {
+                // 최소한 Header는 Parsing 할 수 있는지 확인.
+                if (buffer.Count < HeaderSize)
+                {
+                    break;
+                }
+
+                // Packet이 완전체로 도착했는지 확인.
+                ushort dataSize = BitConverter.ToUInt16(buffer.Array, buffer.Offset);
+                if (buffer.Count < dataSize)
+                {
+                    break;
+                }
+
+                // Packet 조립 가능.
+                // ArraySegment는 Structure로 Heap 영역에 할당되는게 아닌 Stack 영역 복사이다.
+                OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+
+                processLength += dataSize;
+
+                // 읽어들인 size/packetId/data 세트 다음의 새로운 size/packetId/data 머리로 이동.
+                buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
+            }
+
+            return processLength;
+        }
+
+        // [size(2)][packageId(2)][ ... ] → 유효 범위 처리.
+        public abstract void OnReceivePacket(ArraySegment<byte> buffer);
+    }
+
     public abstract class Session
     {
         Socket _socket;

@@ -7,17 +7,31 @@ using System.Threading;
 
 namespace DummyClient
 {
+    class Packet
+    {
+        public ushort size;
+        public ushort packetId;
+    }
+
     class GameSession : Session
     {
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"OnConnected: {endPoint}");
 
+            Packet packet = new Packet() { size = 4, packetId = 7 };
+
             // 송신.
             for (int i = 0; i < 5; ++i)
             {
-                byte[] sendBuffer = Encoding.UTF8.GetBytes($"Hello World! {i}");
-                Send(sendBuffer);
+                ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
+                byte[] sizeBuffer = BitConverter.GetBytes(packet.size);
+                byte[] packetBuffer = BitConverter.GetBytes(packet.packetId);
+                Array.Copy(sizeBuffer, 0, openSegment.Array, openSegment.Offset, sizeBuffer.Length);
+                Array.Copy(packetBuffer, 0, openSegment.Array, openSegment.Offset + sizeBuffer.Length, packetBuffer.Length);
+                ArraySegment<byte> realBuffer = SendBufferHelper.Close(packet.size);
+
+                Send(realBuffer);
             }
         }
 
