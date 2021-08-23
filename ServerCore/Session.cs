@@ -15,7 +15,7 @@ namespace ServerCore
         ReceiveBuffer _receiveBuffer = new ReceiveBuffer(1024);
 
         object _lock = new object();
-        Queue<byte[]> _sendQueue = new Queue<byte[]>();
+        Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
 
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
 
@@ -41,7 +41,7 @@ namespace ServerCore
             RegisterReceive();
         }
 
-        public void Send(byte[] sendBuffer)
+        public void Send(ArraySegment<byte> sendBuffer)
         {
             lock (_lock)
             {
@@ -76,8 +76,8 @@ namespace ServerCore
             // BufferList를 쓸 경우, SetBuffer로 다른 buffer를 설정하면 오류가 난다.
             while (_sendQueue.Count > 0)
             {
-                byte[] buffer = _sendQueue.Dequeue();
-                _pendingList.Add(new ArraySegment<byte>(buffer, 0, buffer.Length)); // param[1] = array start index.
+                ArraySegment<byte> buffer = _sendQueue.Dequeue();
+                _pendingList.Add(buffer);
             }
             _sendArgs.BufferList = _pendingList;
 
@@ -168,8 +168,6 @@ namespace ServerCore
                         return;
                     }
 
-                    // param[1]: start index, param[2]: 읽어들일 바이트 수.
-                    OnReceive(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
                     RegisterReceive();
                 }
                 catch (Exception e)

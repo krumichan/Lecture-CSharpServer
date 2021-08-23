@@ -8,12 +8,26 @@ namespace Lecture_CSharpServer
 {
     class GameSession : Session
     {
+        class Knight
+        {
+            public int hp;
+            public int attack;
+        }
+
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"OnConnected: {endPoint}");
 
-            byte[] sendBuffer = Encoding.UTF8.GetBytes("Welcome to MMORPG Server !");
-            Send(sendBuffer);
+            Knight knight = new Knight() { hp = 100, attack = 10 };
+
+            ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
+            byte[] hpBuffer = BitConverter.GetBytes(knight.hp);
+            byte[] attackBuffer = BitConverter.GetBytes(knight.attack);
+            Array.Copy(hpBuffer, 0, openSegment.Array, openSegment.Offset, hpBuffer.Length);
+            Array.Copy(attackBuffer, 0, openSegment.Array, openSegment.Offset + hpBuffer.Length, attackBuffer.Length);
+            ArraySegment<byte> realBuffer = SendBufferHelper.Close(hpBuffer.Length + attackBuffer.Length);
+
+            Send(realBuffer);
             Thread.Sleep(1000);
             Disconnect();
         }
