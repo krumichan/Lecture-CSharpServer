@@ -1,0 +1,16 @@
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.exe
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.deps.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.runtimeconfig.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.runtimeconfig.dev.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.dll
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\Lecture-CSharpServer.pdb
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\ServerCore.dll
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\bin\Debug\netcoreapp3.1\ServerCore.pdb
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.csprojAssemblyReference.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.AssemblyInfoInputs.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.AssemblyInfo.cs
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.csproj.CoreCompileInputs.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.csproj.CopyComplete
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.dll
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.pdb
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\Lecture-CSharpServer\obj\Debug\netcoreapp3.1\Lecture-CSharpServer.genruntimeconfig.cache

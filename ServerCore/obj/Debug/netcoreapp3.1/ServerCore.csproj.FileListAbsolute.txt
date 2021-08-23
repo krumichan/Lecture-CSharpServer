@@ -1,7 +1,4 @@
-C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.exe
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.deps.json
-C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.runtimeconfig.json
-C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.runtimeconfig.dev.json
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.dll
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\bin\Debug\netcoreapp3.1\ServerCore.pdb
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.csprojAssemblyReference.cache
@@ -10,4 +7,3 @@ C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcor
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.csproj.CoreCompileInputs.cache
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.dll
 C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.pdb
-C:\developer\unityws\lecture\vs\Lecture-CSharpServer\ServerCore\obj\Debug\netcoreapp3.1\ServerCore.genruntimeconfig.cache
