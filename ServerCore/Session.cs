@@ -12,6 +12,8 @@ namespace ServerCore
         Socket _socket;
         int _disconnected = 0;  // 0: false, 1: true
 
+        ReceiveBuffer _receiveBuffer = new ReceiveBuffer(1024);
+
         object _lock = new object();
         Queue<byte[]> _sendQueue = new Queue<byte[]>();
 
@@ -21,7 +23,7 @@ namespace ServerCore
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
 
         public abstract void OnConnected(EndPoint endPoint);
-        public abstract void OnReceive(ArraySegment<byte> buffer);
+        public abstract int OnReceive(ArraySegment<byte> buffer);
         public abstract void OnSend(int numberOfBytes);
         public abstract void OnDisconnected(EndPoint endPoint);
 
@@ -30,7 +32,6 @@ namespace ServerCore
             _socket = socket;
 
             _receiveArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
-            _receiveArgs.SetBuffer(new byte[1024], 0, 1024); // receive buffer 설정.
             // 임의의 정보를 넣어줄 수 있다.
             /*receiveArgs.UserToken = this;*/
             /*receiveArgs.UserToken = 1;*/
@@ -125,6 +126,11 @@ namespace ServerCore
         #region Network 통신 (Receive).
         void RegisterReceive()
         {
+            _receiveBuffer.Clean();
+
+            ArraySegment<byte> segment = _receiveBuffer.WriteSegment;
+            _receiveArgs.SetBuffer(segment.Array, segment.Offset, segment.Count); // Offset: 시작 위치, Count: 빈 공간.
+
             // Async 처리는 Kernel 단계에서 하기 때문에 부하가 크다.
             bool pending = _socket.ReceiveAsync(_receiveArgs);
             if (pending == false)
@@ -140,6 +146,28 @@ namespace ServerCore
             {
                 try
                 {
+                    // Write Cursor 이동.
+                    if (_receiveBuffer.OnWrite(args.BytesTransferred) == false)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
+                    // Contents 쪽으로 Data를 넘겨주고 얼마나 처리했는지 받는다.
+                    int processLength = OnReceive(_receiveBuffer.ReadSegment);
+                    if (processLength < 0 || _receiveBuffer.DataSize < processLength)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
+                    // Read Cursor 이동.
+                    if (_receiveBuffer.OnRead(processLength) == false)
+                    {
+                        Disconnect();
+                        return;
+                    }
+
                     // param[1]: start index, param[2]: 읽어들일 바이트 수.
                     OnReceive(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
                     RegisterReceive();
