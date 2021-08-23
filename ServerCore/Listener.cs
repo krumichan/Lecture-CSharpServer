@@ -9,12 +9,12 @@ namespace ServerCore
     class Listener
     {
         Socket _listenSocket;
-        Action<Socket> _onAcceptHandler;
+        Func<Session> _sessionFactory;
 
-        public void Init(IPEndPoint endPoint, Action<Socket> onAcceptHandler)
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory)
         {
             _listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            _onAcceptHandler += onAcceptHandler;
+            _sessionFactory += sessionFactory;
 
             // 문지기 교육.
             _listenSocket.Bind(endPoint);
@@ -25,6 +25,15 @@ namespace ServerCore
             SocketAsyncEventArgs args = new SocketAsyncEventArgs(); // 재사용 가능.
             args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
             RegisterAccept(args);
+
+            // 독립적인 객체이기 때문에 아래와 같이 여러개를 놓을 수 있다.
+            // ( 허용량이 높아지는 것 )
+            /*for (int i = 0; i < 10; ++i)
+            {
+                SocketAsyncEventArgs args = new SocketAsyncEventArgs(); // 재사용 가능.
+                args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+                RegisterAccept(args);
+            }*/
         }
 
         void RegisterAccept(SocketAsyncEventArgs args)
@@ -46,7 +55,9 @@ namespace ServerCore
             // 요청이 정상 도착.
             if (args.SocketError == SocketError.Success)
             {
-                _onAcceptHandler.Invoke(args.AcceptSocket);
+                Session session = _sessionFactory.Invoke();
+                session.Start(args.AcceptSocket);
+                session.OnConnected(args.AcceptSocket.RemoteEndPoint);
             }
             // Error 발생.
             else
