@@ -1,0 +1,13 @@
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.exe
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.deps.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.runtimeconfig.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.runtimeconfig.dev.json
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.dll
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\bin\PacketGenerator.pdb
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.csprojAssemblyReference.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.AssemblyInfoInputs.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.AssemblyInfo.cs
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.csproj.CoreCompileInputs.cache
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.dll
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.pdb
+C:\developer\unityws\lecture\vs\Lecture-CSharpServer\PacketGenerator\obj\Debug\PacketGenerator.genruntimeconfig.cache
