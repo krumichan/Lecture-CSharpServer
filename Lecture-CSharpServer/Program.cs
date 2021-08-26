@@ -12,6 +12,8 @@ namespace Lecture_CSharpServer
 
         static void Main(string[] args)
         {
+            PacketManager.Instance.Register();
+
             // DNS ( Domain Name System )
             // Server Address   → Name Address
             // ex) 172.217.26.4 → www.google.com
