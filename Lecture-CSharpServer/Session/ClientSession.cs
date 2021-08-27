@@ -43,7 +43,7 @@ namespace Lecture_CSharpServer
 
         public override void OnSend(int numberOfBytes)
         {
-            Console.WriteLine($"Transferred bytes: {numberOfBytes}");
+            //Console.WriteLine($"Transferred bytes: {numberOfBytes}");
         }
     }
 }

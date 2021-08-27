@@ -16,6 +16,7 @@ namespace ServerCore
         public sealed override int OnReceive(ArraySegment<byte> buffer)
         {
             int processLength = 0;
+            int packetCount = 0;
 
             while (true)
             {
@@ -35,11 +36,17 @@ namespace ServerCore
                 // Packet 조립 가능.
                 // ArraySegment는 Structure로 Heap 영역에 할당되는게 아닌 Stack 영역 복사이다.
                 OnReceivePacket(new ArraySegment<byte>(buffer.Array, buffer.Offset, dataSize));
+                packetCount++;
 
                 processLength += dataSize;
 
                 // 읽어들인 size/packetId/data 세트 다음의 새로운 size/packetId/data 머리로 이동.
                 buffer = new ArraySegment<byte>(buffer.Array, buffer.Offset + dataSize, buffer.Count - dataSize);
+            }
+
+            if (packetCount > 1)
+            {
+                Console.WriteLine($"패킷 모아보내기 : {packetCount}");
             }
 
             return processLength;
@@ -54,7 +61,7 @@ namespace ServerCore
         Socket _socket;
         int _disconnected = 0;  // 0: false, 1: true
 
-        ReceiveBuffer _receiveBuffer = new ReceiveBuffer(1024);
+        ReceiveBuffer _receiveBuffer = new ReceiveBuffer(65535);
 
         object _lock = new object();
         Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
@@ -90,6 +97,27 @@ namespace ServerCore
             _sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnReceiveCompleted);
 
             RegisterReceive();
+        }
+
+        public void Send(List<ArraySegment<byte>> sendBufferList)
+        {
+            if (sendBufferList.Count == 0)
+            {
+                return;
+            }
+
+            lock (_lock)
+            {
+                foreach (ArraySegment<byte> sendBuffer in sendBufferList)
+                {
+                    _sendQueue.Enqueue(sendBuffer);
+                    if (_pendingList.Count == 0)
+                    {
+                        // RegisterSend도 lock을 같이 잠금.
+                        RegisterSend();
+                    }
+                }
+            }
         }
 
         public void Send(ArraySegment<byte> sendBuffer)

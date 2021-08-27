@@ -11,6 +11,12 @@ namespace Lecture_CSharpServer
         static Listener _listener = new Listener();
         public static GameRoom Room = new GameRoom();
 
+        static void FlushRoom()
+        {
+            Room.Push(() => Room.Flush());
+            JobTimer.Instance.Push(FlushRoom, 250);
+        }
+
         static void Main(string[] args)
         {
             // DNS ( Domain Name System )
@@ -22,10 +28,14 @@ namespace Lecture_CSharpServer
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777); // ipAddr: 식당 주소,  7777: 식당 문 위치.
 
             _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
+            Console.WriteLine("Listening...");
+
+            //FlushRoom();
+            JobTimer.Instance.Push(FlushRoom);
 
             while (true)
             {
-                ;
+                JobTimer.Instance.Flush();
             }
         }
     }
