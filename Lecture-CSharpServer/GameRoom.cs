@@ -1,13 +1,22 @@
-﻿using System;
+﻿using ServerCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Lecture_CSharpServer
 {
-    class GameRoom
+    // JobQueue를 사용하는 Class는 별도의 lock을 설정하지 않아도 된다.
+    // JobQueue에서 lock을 수행하고 있어서,
+    // 단일 Thread 실행을 보장하기 때문이다.
+    class GameRoom : IJobQueue
     {
         List<ClientSession> _sessions = new List<ClientSession>();
-        object _lock = new object();
+        JobQueue _jobQueue = new JobQueue();
+
+        public void Push(Action job)
+        {
+            _jobQueue.Push(job);
+        }
 
         public void Broadcast(ClientSession session, string chat)
         {
@@ -17,30 +26,22 @@ namespace Lecture_CSharpServer
             packet.chat = $"{session.SessionId} : {chat}";
             ArraySegment<byte> segment = packet.Write();
 
-            lock (_lock)
+            // O(N^2)
+            foreach (ClientSession s in _sessions)
             {
-                foreach (ClientSession s in _sessions)
-                {
-                    s.Send(segment);
-                }
+                s.Send(segment);
             }
         }
 
         public void Enter(ClientSession session)
         {
-            lock (_lock)
-            {
-                _sessions.Add(session);
-                session.Room = this;
-            }
+            _sessions.Add(session);
+            session.Room = this;
         }
 
         public void Leave(ClientSession session)
         {
-            lock (_lock)
-            {
-                _sessions.Remove(session);
-            }
+            _sessions.Remove(session);
         }
     }
 }

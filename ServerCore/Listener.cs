@@ -11,7 +11,7 @@ namespace ServerCore
         Socket _listenSocket;
         Func<Session> _sessionFactory;
 
-        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory)
+        public void Init(IPEndPoint endPoint, Func<Session> sessionFactory, int register = 10, int backlog = 100)
         {
             _listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             _sessionFactory += sessionFactory;
@@ -20,20 +20,17 @@ namespace ServerCore
             _listenSocket.Bind(endPoint);
 
             // 영업 시작.
-            _listenSocket.Listen(10); // param: 최대 대기수.
-
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs(); // 재사용 가능.
-            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
-            RegisterAccept(args);
+            // param: 최대 대기수.
+            _listenSocket.Listen(backlog);
 
             // 독립적인 객체이기 때문에 아래와 같이 여러개를 놓을 수 있다.
             // ( 허용량이 높아지는 것 )
-            /*for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < register; ++i)
             {
                 SocketAsyncEventArgs args = new SocketAsyncEventArgs(); // 재사용 가능.
                 args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
                 RegisterAccept(args);
-            }*/
+            }
         }
 
         void RegisterAccept(SocketAsyncEventArgs args)
