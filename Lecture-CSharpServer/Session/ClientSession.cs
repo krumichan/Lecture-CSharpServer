@@ -9,22 +9,14 @@ namespace Lecture_CSharpServer
 {
 	class ClientSession : PacketSession
     {
+        public int SessionId { get; set; }
+        public GameRoom Room { get; set; }
+
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine($"OnConnected: {endPoint}");
 
-            //Packet packet = new Packet() { size = 100, packetId = 10 };
-
-            //ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
-            //byte[] hpBuffer = BitConverter.GetBytes(packet.size);
-            //byte[] attackBuffer = BitConverter.GetBytes(packet.packetId);
-            //Array.Copy(hpBuffer, 0, openSegment.Array, openSegment.Offset, hpBuffer.Length);
-            //Array.Copy(attackBuffer, 0, openSegment.Array, openSegment.Offset + hpBuffer.Length, attackBuffer.Length);
-            //ArraySegment<byte> realBuffer = SendBufferHelper.Close(hpBuffer.Length + attackBuffer.Length);
-
-            //Send(realBuffer);
-            Thread.Sleep(5000);
-            Disconnect();
+            Program.Room.Enter(this);
         }
 
         public override void OnReceivePacket(ArraySegment<byte> buffer)
@@ -34,6 +26,13 @@ namespace Lecture_CSharpServer
 
         public override void OnDisconnected(EndPoint endPoint)
         {
+            SessionManager.Instance.Remove(this);
+            if (Room != null)
+            {
+                Room.Leave(this);
+                Room = null;
+            }
+
             Console.WriteLine($"OnDisconnected: {endPoint}");
         }
 

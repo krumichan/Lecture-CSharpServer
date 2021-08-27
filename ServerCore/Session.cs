@@ -69,6 +69,15 @@ namespace ServerCore
         public abstract void OnSend(int numberOfBytes);
         public abstract void OnDisconnected(EndPoint endPoint);
 
+        void Clear()
+        {
+            lock (_lock)
+            {
+                _sendQueue.Clear();
+                _pendingList.Clear();
+            }
+        }
+
         public void Start(Socket socket)
         {
             _socket = socket;
@@ -107,11 +116,18 @@ namespace ServerCore
 
             _socket.Shutdown(SocketShutdown.Both); // 예고. ( 없어도 됨 )
             _socket.Close();
+            Clear();
         }
 
         #region Network 통신 (Send).
         void RegisterSend()
         {
+            // 최소한의 방어 처리.
+            if (_disconnected == 1)
+            {
+                return;
+            }
+
             /*byte[] buffer = _sendQueue.Dequeue();*/
             /*_sendArgs.SetBuffer(buffer, 0, buffer.Length);*/
 
@@ -123,11 +139,18 @@ namespace ServerCore
             }
             _sendArgs.BufferList = _pendingList;
 
-            // Async 처리는 Kernel 단계에서 하기 때문에 부하가 크다.
-            bool pending = _socket.SendAsync(_sendArgs);
-            if (pending == false)
+            try
             {
-                OnSendCompleted(null, _sendArgs);
+                // Async 처리는 Kernel 단계에서 하기 때문에 부하가 크다.
+                bool pending = _socket.SendAsync(_sendArgs);
+                if (pending == false)
+                {
+                    OnSendCompleted(null, _sendArgs);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"RegisterSend Failed.. {e}");
             }
         }
 
@@ -168,16 +191,28 @@ namespace ServerCore
         #region Network 통신 (Receive).
         void RegisterReceive()
         {
+            if (_disconnected == 1)
+            {
+                return;
+            }
+
             _receiveBuffer.Clean();
 
             ArraySegment<byte> segment = _receiveBuffer.WriteSegment;
             _receiveArgs.SetBuffer(segment.Array, segment.Offset, segment.Count); // Offset: 시작 위치, Count: 빈 공간.
 
-            // Async 처리는 Kernel 단계에서 하기 때문에 부하가 크다.
-            bool pending = _socket.ReceiveAsync(_receiveArgs);
-            if (pending == false)
+            try
             {
-                OnReceiveCompleted(null, _receiveArgs);
+                // Async 처리는 Kernel 단계에서 하기 때문에 부하가 크다.
+                bool pending = _socket.ReceiveAsync(_receiveArgs);
+                if (pending == false)
+                {
+                    OnReceiveCompleted(null, _receiveArgs);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"RegisterReceive Failed.. {e}");
             }
         }
 

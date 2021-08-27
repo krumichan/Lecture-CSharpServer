@@ -9,11 +9,10 @@ namespace Lecture_CSharpServer
     class Program
     {
         static Listener _listener = new Listener();
+        public static GameRoom Room = new GameRoom();
 
         static void Main(string[] args)
         {
-            PacketManager.Instance.Register();
-
             // DNS ( Domain Name System )
             // Server Address   → Name Address
             // ex) 172.217.26.4 → www.google.com
@@ -22,7 +21,7 @@ namespace Lecture_CSharpServer
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777); // ipAddr: 식당 주소,  7777: 식당 문 위치.
 
-            _listener.Init(endPoint, () => { return new ClientSession(); });
+            _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 
             while (true)
             {
